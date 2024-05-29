@@ -8,7 +8,7 @@ This is a minimal terraform module for implementing an instance of the Google Cl
 
 *terragrunt.hcl*
 ```hcl
-source = "git@github.com:ransontesting/tf-gcp-lb"
+source = "git@github.com:ranson21/tf-gcp-lb"
 
 inputs = {
   ...
