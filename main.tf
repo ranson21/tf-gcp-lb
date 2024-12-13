@@ -26,7 +26,6 @@ resource "google_compute_backend_bucket" "buckets" {
     }
   }
 }
-
 # Create health checks for backend services
 resource "google_compute_health_check" "default" {
   for_each = var.backend_services
@@ -34,12 +33,12 @@ resource "google_compute_health_check" "default" {
   project = var.project
   name    = "${var.name}-hc-${each.key}"
 
+  check_interval_sec = each.value.health_check.check_interval_sec
+  timeout_sec        = each.value.health_check.timeout_sec
+
   http_health_check {
     port         = each.value.health_check.port
     request_path = each.value.health_check.request_path
-
-    check_interval_sec = each.value.health_check.check_interval_sec
-    timeout_sec        = each.value.health_check.timeout_sec
   }
 }
 
