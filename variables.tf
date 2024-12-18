@@ -60,12 +60,12 @@ variable "backend_services" {
       balancing_mode  = optional(string)
       capacity_scaler = optional(number)
     }))
-    health_check = object({
-      port               = number
-      request_path       = string
+    health_check = optional(object({
+      port               = optional(number)
+      request_path       = optional(number)
       check_interval_sec = optional(number)
       timeout_sec        = optional(number)
-    })
+    }))
     cdn_policy = optional(object({
       cache_mode        = optional(string)
       client_ttl        = optional(number)

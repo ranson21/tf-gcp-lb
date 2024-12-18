@@ -27,8 +27,12 @@ resource "google_compute_backend_bucket" "buckets" {
   }
 }
 # Create health checks for backend services
+# Create health checks for non-serverless backends
 resource "google_compute_health_check" "default" {
-  for_each = var.backend_services
+  for_each = {
+    for k, v in var.backend_services : k => v
+    if v.backend_type != "SERVERLESS_NEG"
+  }
 
   project = var.project
   name    = "${var.name}-hc-${each.key}"
@@ -62,7 +66,12 @@ resource "google_compute_backend_service" "services" {
     }
   }
 
-  health_checks = [google_compute_health_check.default[each.key].id]
+  # Only include health checks for non-serverless backends
+  health_checks = (
+    each.value.backend_type != "SERVERLESS_NEG"
+    ? [google_compute_health_check.default[each.key].id]
+    : null
+  )
 
   dynamic "cdn_policy" {
     for_each = each.value.cdn_policy != null ? [each.value.cdn_policy] : []
